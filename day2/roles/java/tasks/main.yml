@@ -1,0 +1,8 @@
+---
+- name: Installation prerequisites
+  yum: 
+    name: "{{ item }}" 
+    state: present
+  with_items:
+    - "java-{{ version }}-openjdk"
+    - "java-{{ version }}-openjdk-devel"

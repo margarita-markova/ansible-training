@@ -1,0 +1,17 @@
+---
+- name: Installation Httpd
+  yum:
+    name: httpd
+    state: present
+
+- name: Add configuration file 
+  copy: 
+    src: "{{ host_conf_path }}"
+    dest: "{{ remote_conf_path }}"
+    remote_src: no
+  notify: Restarting httpd
+
+- name: Ensure httpd is running
+  service:
+    name: httpd 
+    state: running

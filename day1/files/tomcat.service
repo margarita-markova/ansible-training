@@ -1,0 +1,16 @@
+[Unit]
+Description=Tomcat
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+User=tomcat
+Group=tomcat
+
+ExecStart=/bin/bash /usr/share/tomcat/apache-tomcat-8.5.42/bin/startup.sh
+ExecStop=/bin/bash /usr/share/tomcat/apache-tomcat-8.5.42/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+

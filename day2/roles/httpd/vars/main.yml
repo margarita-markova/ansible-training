@@ -1,0 +1,3 @@
+---
+remote_conf_path: /etc/httpd/conf.d/tomcat.conf
+host_conf_path: files/tomcat.conf

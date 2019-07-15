@@ -1,0 +1,32 @@
+- name: Bootstrap Maintenance
+  hosts: all
+  connection: ssh
+  become: yes 
+  vars:
+    username: devops
+    groupname: devops 
+    ssh_key_path: /home/student/ansible/day1/files/devops.pem
+  tasks:
+  - name: "Create group for user"
+    group:
+      name: "{{ groupname }}"
+
+  - name: "Create user account"
+    user:
+      name: "{{ username }}"
+      group: "{{ groupname }}"
+      append: yes 
+
+  - name: "Add authorized keys"
+    authorized_key:
+      user: "{{ username }}"
+      key: "{{ lookup('file', ssh_key_path) }}"
+      exclusive: yes
+      manage_dir: yes
+
+  - name: "Permission issue solution"
+    copy: 
+      src: "files/devops"
+      dest: "/etc/sudoers.d/devops"
+      backup: yes
+      validate: /usr/sbin/visudo -cf %s

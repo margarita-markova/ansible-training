@@ -1,0 +1,112 @@
+##########################################################
+- name: "Httpd installation"
+  hosts: webservers
+  vars:
+    remote_conf_path: /etc/httpd/conf.d/tomcat.conf
+    host_conf_path: files/tomcat.conf
+  become: yes
+  become_user: root
+
+  tasks:
+    - name: Installation Httpd
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - httpd
+
+    - name: Add configuration file 
+      copy: 
+        src: "{{ host_conf_path }}"
+        dest: "{{ remote_conf_path }}"
+        remote_src: no
+      notify: Restarting httpd
+
+    - name: Ensure httpd is running
+      service:
+        name: httpd 
+        state: started
+
+  handlers:
+    - name: Restarting httpd
+      service:
+        name: httpd
+        state: restarted
+
+#########################################################
+- name: "Tomcat installation"
+  hosts: appservers
+  become: yes
+  become_user: root
+  vars:
+    catalina_home: /usr/share/tomcat/apache-tomcat-8.5.42
+    installation_home: /usr/share/tomcat
+    services_home: /usr/lib/systemd/system
+
+  tasks:
+  - name: Installation prerequisites
+    yum: 
+      name: "{{ item }}" 
+      state: present
+    with_items:
+      - unzip
+      - java-1.8.0-openjdk
+
+  - name: Creating group tomcat
+    group: 
+      name: tomcat
+
+  - name: Addition of user tomcat
+    user: 
+      name: tomcat 
+      group: tomcat
+      append: yes
+
+  - name: Downloading Tomcat
+    get_url: 
+      url: http://ftp.byfly.by/pub/apache.org/tomcat/tomcat-8/v8.5.42/bin/apache-tomcat-8.5.42.zip
+      dest: /tmp
+
+  - name: Mkdir for tomcat
+    file:
+      path: "{{ installation_home }}"
+      state: directory
+
+  - name: Extracting archive
+    unarchive:
+      src: /tmp/apache-tomcat-8.5.42.zip
+      dest: "{{ installation_home }}"
+      remote_src: yes
+
+  - name: Movement provision scripts
+    copy:
+      src: files/setenv.sh
+      dest: "{{ catalina_home }}/bin/setenv.sh"
+      mode: '755'
+
+  - name: Movement provision scripts
+    copy:
+      src: files/tomcat.service
+      dest: "{{ services_home }}"
+
+  - name: Changing ownership of Tomcat installation
+    file: 
+      path: "{{ installation_home }}"
+      owner: tomcat 
+      group: tomcat 
+      state: directory 
+      recurse: yes
+
+  - name: Changing mode for *.sh
+    shell: |-
+      chmod 755 {{ catalina_home }}/bin/*.sh
+
+  - name: Daemon-reloading
+    systemd:
+      daemon_reload: yes
+
+  - name: Starting Tomcat
+    service: 
+      name: tomcat 
+      state: started 
+      enabled: yes

@@ -1,0 +1,26 @@
+#uid dictionary
+- name: "Create group for user"
+  group:
+    name: "{{ groupname }}"
+
+- name: "Create user account"
+  user:
+    name: "{{ username }}"
+    group: "{{ groupname }}"
+    append: yes 
+    #uid?
+    state: present
+
+- name: "Add authorized keys"
+  authorized_key:
+    user: "{{ username }}"
+    key: "{{ auth_key }}"
+    exclusive: yes
+    manage_dir: yes
+
+- name: "Sudo privileges"
+  copy:  #template?
+    src: "files/devops"
+    dest: "/etc/sudoers.d/devops"
+    backup: yes
+    validate: /usr/sbin/visudo -cf %s
