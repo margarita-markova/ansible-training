@@ -1,2 +1,15 @@
----
-# handlers file for devops_user
+- name: save user facts
+  copy: 
+    content: >
+      {
+        "user": {
+          "name": "{{ username }}",
+          "id": "{{ user_info.uid }}"
+        },
+        "group": {
+          "name": "{{ groupname }}",
+          "id": "{{ user_info.group }}"
+        }
+      }
+    dest: "/etc/ansible/facts.d/{{ username }}_user.fact"
+  become: yes

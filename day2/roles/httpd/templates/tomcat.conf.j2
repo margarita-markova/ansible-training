@@ -1,0 +1,7 @@
+<VirtualHost *:80>
+	ServerName example.com
+
+        ProxyRequests On
+        ProxyPass / http://{{ hostvars[groups['appservers'][0]].ansible_host }}:8080
+        ProxyPassReverse / http://{{ hostvars[groups['appservers'][0]].ansible_host }}:8080
+</VirtualHost>

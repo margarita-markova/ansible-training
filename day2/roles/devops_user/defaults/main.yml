@@ -1,3 +1,5 @@
-groupname: {{ username }}
+groupname: "{{ username }}"
+free_id: 1001
 sudo_priveleges: ""
 auth_key: ""
+

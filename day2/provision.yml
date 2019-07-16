@@ -1,0 +1,13 @@
+- name: Deploy tomcat services
+  hosts: appservers
+
+  roles:
+    - common
+    - tomcat
+
+- name: Deploy httpd
+  hosts: webservers
+
+  roles:
+    - common
+    - httpd

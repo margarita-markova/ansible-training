@@ -1,2 +1,4 @@
 ---
-# vars file for tomcat
+catalina_home: "/usr/share/tomcat/apache-tomcat-{{ version }}"
+installation_home: /usr/share/tomcat
+services_home: /usr/lib/systemd/system

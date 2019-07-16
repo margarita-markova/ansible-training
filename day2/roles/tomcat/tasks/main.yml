@@ -1,39 +1,54 @@
----
 - name: Downloading Tomcat
   get_url: 
-    url: "http://ftp.byfly.by/pub/apache.org/tomcat/tomcat-{{ ['version'][0] }}/v{{ version }}/bin/apache-tomcat-{{ version }}.zip"
+    url: "{{ tomcat_url }}"     
     dest: /tmp
+  register: url_info
+  become: yes
+  no_log: True
 
 - name: Mkdir for tomcat
   file:
     path: "{{ installation_home }}"
     state: directory
+  become: yes
+  no_log: True
 
 - name: Extracting archive
   unarchive:
-    src: "/tmp/apache-tomcat-{{ version }}.zip"
+    src: "{{ url_info.dest }}"
     dest: "{{ installation_home }}"
     remote_src: yes
+  become: yes
+  no_log: True
 
 - name: Movement provision scripts
   copy:
     src: files/setenv.sh
     dest: "{{ catalina_home }}/bin/setenv.sh"
     mode: '755'
+  become: yes
+  no_log: True
 
-- name: Movement provision scripts #???
-  copy:
-    src: files/tomcat.service
+- name: Movement provision scripts 
+  template:
+    src: tomcat.service.j2
     dest: "{{ services_home }}"
+  become: yes
 
 - name: Changing ownership of Tomcat installation
   file: 
     path: "{{ installation_home }}"
-    owner: "{{ username }}" 
-    group: "{{ groupname }}" #exists in meta role devops_user 
+    owner: "{{ tomcat_user }}" 
+    group: "{{ tomcat_group }}"
     state: directory 
     recurse: yes
+  become: yes
+  no_log: True
 
 - name: Changing mode for *.sh
   shell: "chmod 755 {{ catalina_home }}/bin/*.sh"
-
+  become: yes
+  notify:
+    - systemd daemon reload
+    - restart tomcat
+    - save tomcat details
