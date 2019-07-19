@@ -1,0 +1,28 @@
+#check java needed?
+
+#installation by package
+- name: Installation prerequisites
+  yum: 
+    name: "{{ item }}" 
+    state: present
+  with_items:
+    - "java-{{ jdk_version }}-openjdk"
+    #- "java-{{ jdk_version }}-openjdk-devel"
+  notify:
+    - save java details
+  become: yes
+  no_log: True
+
+#create home directiory
+- name: JAVA_HOME directory creation
+  copy: 
+    - dest: "{{ java_home }}"
+
+- name: 
+
+- name: Get info about java
+  shell: |-
+    java -version 2>&1 | awk '/version/{print $3}'
+  register: java_version
+  notify:
+    - save java details

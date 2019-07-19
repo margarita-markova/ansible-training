@@ -1,0 +1,46 @@
+- name: Add Nginx Repository
+  yum_repository:
+    name: Nginx
+    description: Nginx Centos Repo
+    baseurl: http://nginx.org/packages/centos/$releasever/$basearch/
+    gpgcheck: no
+    enabled: yes
+  become: yes
+
+- name: Ensure Nginx Installed
+  yum: name=nginx
+  notify:
+    - save nginx details
+  become: yes
+
+# Update Default Home Page
+- name: Deploy Customized Home Page
+  template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+  become: yes
+
+- name: Ensure Nginx Service Running and Enabled
+  service: name=nginx state=started enabled=yes
+  become: yes
+
+# - name: hello nginx
+#   yum:
+#     name: nginx
+#     state: present
+#   notify:
+#     - systemd daemon reload
+#     - start
+#   become: yes
+
+# - name: gg
+#   file:
+#     dest: /usr/share/nginx/html/
+#     type: directory
+
+# - name: conf page
+#   template: 
+#     src: /student/home/ansible/nw/templates/index.html
+#     dest: /usr/share/nginx/html/index.html
+#     remote_src: no
+#   become: yes

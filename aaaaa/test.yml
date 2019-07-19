@@ -1,0 +1,19 @@
+- name: Destroy
+  import_playbook: /home/student/ansible/aaaaa/create.yml
+  tags:
+    - test
+
+- name: intallation-tomcat-httpd 
+  import_playbook: /home/student/ansible/day1/provision.yml  
+
+- name: tests
+  import_playbook: /home/student/ansible/aaaaa/tests.yml
+  tags:
+    - test
+
+- name: Destroy
+  import_playbook: /home/student/ansible/aaaaa/destroy.yml
+
+
+
+

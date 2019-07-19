@@ -1,0 +1,32 @@
+- name: systemd daemon reload
+  systemd: 
+    daemon_reload: yes
+  become: yes
+
+- name: restart tomcat
+  systemd: 
+    state: started 
+    name: tomcat
+  become: yes
+  no_log: True
+
+- name: save tomcat details
+  copy: 
+    content: >
+      {
+        "version": "{{ version }}",
+        "tomcat_home": "{{ installation_home }}",
+        "catalina_home": "{{ catalina_home }}",
+        "user": {
+          "name": "{{ tomcat_user }}",
+          "id": "{{ ansible_local.tomcat_user.user.id }}"
+        },
+        "group": {
+          "name": "{{ tomcat_group }}",
+          "id": "{{ ansible_local.tomcat_user.group.id }}"
+        },
+        "tomcat_download_url": "{{ tomcat_url }}",
+        "installed": "{{ ansible_date_time.iso8601 }}"
+      }
+    dest: /etc/ansible/facts.d/tomcat.fact
+  become: yes

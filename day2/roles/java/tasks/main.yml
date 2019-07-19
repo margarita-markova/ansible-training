@@ -5,12 +5,11 @@
     name: "{{ item }}" 
     state: present
   with_items:
-    - "java-{{ jdk_version }}-openjdk"
+    #- "java-{{ jdk_version }}-openjdk"
     - "java-{{ jdk_version }}-openjdk-devel"
   notify:
     - save java details
   become: yes
-  no_log: True
 
 - name: Get info about java
   shell: |-

@@ -1,0 +1,23 @@
+- name: Installation Httpd
+  yum:
+    name: httpd
+    state: present
+  become: yes
+  become_user: root
+
+- name: Find version
+  shell: rpm -q httpd
+  register: httpd_version
+  become: yes 
+  notify:
+    - save httpd details
+
+- name: Add configuration file 
+  template: 
+    src: tomcat.conf.j2
+    dest: "{{ remote_conf_path }}"
+    remote_src: no
+  become: yes
+  notify:
+    - systemd daemon reload 
+    - restart httpd

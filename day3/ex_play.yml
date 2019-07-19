@@ -1,0 +1,18 @@
+- hosts: appservers
+  vars:
+    - usr: vagrant
+  tasks:
+    - name: uid
+      getent:
+        database: passwd
+        split: ' '
+      register: passwd_data 
+
+    - vars:
+        - hmm: passwd_data.ansible_facts.getent_passwd | dict2items | map(attribute='key') | join(':') | split(':')
+
+    - debug:
+        msg: "{{ hmm | find_by('vagrant') == True }}"
+      failed_when: hmm | find_by(usr) == True #is match 'vagrant'
+
+

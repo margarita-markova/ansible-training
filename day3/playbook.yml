@@ -1,0 +1,29 @@
+- hosts: appservers
+  vars:
+    accounts: 
+      - { name: vasya, id: 1234567 }
+      - { name: vavb, id: 1236778 }
+      - { name: basd, id: 1231111 }
+
+  tasks:
+    - name: blabla
+      getent:
+        database: passwd
+        split: ' '
+      become: yes
+
+    - name: bbb
+      debug:
+        msg: "{{ item.key.split(':')[3] }}" #uid
+      when: "{{ item.key.split(':')[3] }}" == 
+      with_dict:
+        - "{{ getent_passwd }}" 
+        #var: passwd_data #_lines.split()[3] }}"
+
+    # - name: Output of list
+    #   debug:
+    #     msg: "{{ accounts }} "
+
+    # - name: Using custom filter
+    #   debug:
+    #     msg: "{{ accounts | parse('vavb') }} "

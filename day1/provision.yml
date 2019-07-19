@@ -1,38 +1,3 @@
-##########################################################
-- name: "Httpd installation"
-  hosts: webservers
-  vars:
-    remote_conf_path: /etc/httpd/conf.d/tomcat.conf
-    host_conf_path: files/tomcat.conf
-  become: yes
-  become_user: root
-
-  tasks:
-    - name: Installation Httpd
-      yum:
-        name: "{{ item }}"
-        state: present
-      with_items:
-        - httpd
-
-    - name: Add configuration file 
-      copy: 
-        src: "{{ host_conf_path }}"
-        dest: "{{ remote_conf_path }}"
-        remote_src: no
-      notify: Restarting httpd
-
-    - name: Ensure httpd is running
-      service:
-        name: httpd 
-        state: started
-
-  handlers:
-    - name: Restarting httpd
-      service:
-        name: httpd
-        state: restarted
-
 #########################################################
 - name: "Tomcat installation"
   hosts: appservers
@@ -108,5 +73,50 @@
   - name: Starting Tomcat
     service: 
       name: tomcat 
-      state: started 
+      state: restarted 
       enabled: yes
+
+
+##########################################################
+- name: "Httpd installation"
+  hosts: webservers
+  vars:
+    remote_conf_path: /etc/httpd/conf.d/tomcat.conf
+    host_conf_path: tomcat.conf.j2
+  become: yes
+  become_user: root
+
+  tasks:
+
+    - name: Installation Httpd
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - httpd
+
+    - name: Add configuration file 
+      template: 
+        src: "{{ host_conf_path }}"
+        dest: "{{ remote_conf_path }}"
+        remote_src: no
+      notify: 
+        - systemd daemon reload
+        - Restarting httpd
+
+    - name: Restarting httpd
+      service:
+        name: httpd
+        state: restarted
+
+  handlers:
+    - name: systemd daemon reload
+      systemd: 
+        daemon_reload: yes
+      become: yes
+
+    - name: Restarting httpd
+      service:
+        name: httpd
+        state: restarted
+

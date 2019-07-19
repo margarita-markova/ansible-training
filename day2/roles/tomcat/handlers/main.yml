@@ -8,7 +8,6 @@
     state: started 
     name: tomcat
   become: yes
-  no_log: True
 
 - name: save tomcat details
   copy: 

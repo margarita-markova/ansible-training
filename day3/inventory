@@ -1,0 +1,9 @@
+[webservers]
+webserver ansible_host=192.168.77.31 
+
+[appservers]
+appserver ansible_host=192.168.77.32 
+
+[all:vars]
+ansible_connection=ssh
+

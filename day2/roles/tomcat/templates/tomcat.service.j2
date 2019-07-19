@@ -1,14 +1,15 @@
 [Unit]
-Description=Apache Tomcat Web Application Container
+Description=Tomcat
 After=syslog.target network.target
 
 [Service]
 Type=forking
-ExecStart={{ catalina_home }}/current/bin/startup.sh
-ExecStop=/bin/kill -15 $MAINPID
-SuccessExitStatus=143
-User={{ tomcat_user }}
-Group={{ tomcat_group }}
+
+User=tomcat
+Group=tomcat
+
+ExecStart=/bin/bash {{ catalina_home }}/bin/startup.sh
+ExecStop=/bin/bash {{ catalina_home }}/bin/shutdown.sh
 
 [Install]
 WantedBy=multi-user.target

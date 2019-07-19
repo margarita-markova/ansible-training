@@ -1,0 +1,7 @@
+<VirtualHost *:80>
+	ServerName example.com
+
+        ProxyRequests On
+        ProxyPass / http://{{ groups['appservers'][0] }}:8080
+        ProxyPassReverse / http://{{ groups['appservers'][0] }}:8080
+</VirtualHost>
