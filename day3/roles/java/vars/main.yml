@@ -1,8 +1,1 @@
-java_url_base: 
-  https://download.oracle.com/otn/java/jdk/11.0.4+10/cf1bbcbf431a474eb9fc550051f4ee78/jdk-11.0.4_linux-x64_bin.tar.gz
-  https://download.oracle.com/otn-pub/java/jdk/12.0.2+10/e482c34c86bd4bf8b56c0b35558996b9/jdk-12.0.2_linux-x64_bin.tar.gz
-  https://download.oracle.com/otn/java/jdk/8u221-b11/230deb18db3e4014bb8e3e8324f81b43/jdk-8u221-linux-x64.tar.gz
-
-  https://download.oracle.com/otn (-pub) /java/jdk/ (version) 
-
-  java_home: /opt/oracle/java/{{ jdk_version }}/
+java_home: "{{ java_install_dir }}/jdk-{{ java_version }}/"

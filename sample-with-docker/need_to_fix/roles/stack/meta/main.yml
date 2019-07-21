@@ -52,16 +52,6 @@ galaxy_info:
     # NOTE: A tag is limited to a single word comprised of alphanumeric characters.
     #       Maximum 20 tags per role.
 
-dependencies: 
-  - role: devops_user
-    username: "{{ tomcat_user }}"
-    groupname: "{{ tomcat_group }}"
-    groups: sambashare
-    home_dir: /home/tomcat1
-
-  - role: java
-    java_set_javahome: yes
-    java_version: "12.0.2"
-
+dependencies: []
   # List your role dependencies here, one per line. Be sure to remove the '[]' above,
   # if you add dependencies to this list.
